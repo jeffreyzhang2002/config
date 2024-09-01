@@ -42,8 +42,7 @@ function __build_rprompt {
 }
 
 export PROMPT=$(__build_prompt)
-export RPROMPT=$(__build_rprompt)
+#export RPROMPT=$(__build_rprompt)
 
 # Aliases
 alias ls="ls --color=auto"
-alias vim='VIMINIT=.config/vim/vimrc vim'

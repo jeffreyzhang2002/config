@@ -18,6 +18,18 @@
  vim.g.mapleader = " "
  vim.g.maplocalleader = "\\"
  vim.g.netrw_liststyle=3
+ vim.g.clipboard = {
+        name = "win32yank-wsl",
+        copy = {
+            ["+"] = "win32yank.exe -i --crlf",
+            ["*"] = "win32yank.exe -i --crlf",
+        },
+        paste = {
+            ["+"] = "win32yank.exe -o --lf",
+            ["*"] = "win32yank.exe -o --lf",
+        },
+        cache_enabled = true,
+    }
  
  vim.opt.number = true
  vim.opt.relativenumber = true
@@ -146,12 +158,28 @@
  -- Quality Of Life Commands
  vim.keymap.set({"n"}, "<C-s>", vim.cmd.w)
  vim.keymap.set({"n"}, "<c-a>", "<ESC>ggVG")
- 
+
+ -- Change movement to allow for word wrap
+ vim.keymap.set({"n"}, "<Up>", "gk")
+ vim.keymap.set({"n"}, "<Down>", "gj")
+ vim.keymap.set({"i"}, "<Up>", "<C-O>gk")
+ vim.keymap.set({"i"}, "<Down>", "<C-O>gj")
+
  -- Tab Commands
  vim.keymap.set({"n"}, "<C-+>", function() vim.cmd.tabnew(); vim.cmd.Ex() end)
  vim.keymap.set({"n"}, "<C-->", vim.cmd.tabnew)
  vim.keymap.set({"n"}, "<C-Right>", vim.cmd.tabnext)
  vim.keymap.set({"n"}, "<C-Left>", vim.cmd.tabprevious)
+ vim.keymap.set({"n"}, "<A-1>", "1gt")
+ vim.keymap.set({"n"}, "<A-2>", "2gt")
+ vim.keymap.set({"n"}, "<A-3>", "3gt")
+ vim.keymap.set({"n"}, "<A-4>", "4gt")
+ vim.keymap.set({"n"}, "<A-5>", "5gt")
+ vim.keymap.set({"n"}, "<A-6>", "6gt")
+ vim.keymap.set({"n"}, "<A-7>", "7gt")
+ vim.keymap.set({"n"}, "<A-8>", "8gt")
+ vim.keymap.set({"n"}, "<A-9>", "9gt")
+ vim.keymap.set({"n"}, "<A-0>", ":tablest<cr>")
  
  -- Line Numbers and Wrapping
  vim.keymap.set("n", "<c-l>", ":set relativenumber!<cr>")
@@ -214,3 +242,4 @@
 lsp_setup("rust_analyzer") 
 lsp_setup("clangd")
 lsp_setup("typst_lsp")
+
