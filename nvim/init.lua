@@ -37,7 +37,7 @@
  vim.opt.softtabstop = 4
  vim.opt.shiftwidth = 4
  vim.opt.expandtab = true
- 
+
  vim.opt.smartindent = true
  vim.opt.wrap = false
  vim.opt.whichwrap = "<,>,h,l,[,]"
@@ -58,6 +58,9 @@
  -- Tabline
  vim.opt.showtabline = 2
  
+ -- Live preview
+ vim.inccommand="nosplit"
+
  -- Setup lazy.nvim
  require("lazy").setup({
     spec = {
@@ -242,4 +245,4 @@
 lsp_setup("rust_analyzer") 
 lsp_setup("clangd")
 lsp_setup("typst_lsp")
-
+lsp_setup("pylsp")
