@@ -94,16 +94,7 @@
         {"nvim-treesitter/nvim-treesitter"},
         {'nvim-telescope/telescope-fzf-native.nvim', build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release'},
         {'windwp/nvim-autopairs', event = "InsertEnter", config = true},
-        {
-            'Julian/lean.nvim',
-            event = { 'BufReadPre *.lean', 'BufNewFile *.lean' },
-            dependencies = {
-                'neovim/nvim-lspconfig',
-                'nvim-lua/plenary.nvim',
-                'hrsh7th/nvim-cmp',
-            },
-            opts = {lsp = {}, mappings = true,}
-        }
+        {"jake-stewart/multicursor.nvim", branch="1.0"}
     },
     checker = { enabled = true },
  })
@@ -168,6 +159,27 @@
  vim.keymap.set({"i"}, "<Up>", "<C-O>gk")
  vim.keymap.set({"i"}, "<Down>", "<C-O>gj")
 
+ -- Multicursor Commands
+ local mc = require("multicursor-nvim")
+ mc.setup()
+
+ vim.keymap.set({"n", "v"}, "<A-up>", function() mc.lineAddCursor(-1) end)
+ vim.keymap.set({"n", "v"}, "<A-down>", function() mc.lineAddCursor(1) end)
+ vim.keymap.set({"n", "v"}, "<C-M-up>", function() mc.lineSkipCursor(-1) end)
+ vim.keymap.set({"n", "v"}, "<C-M-down>", function() mc.lineSkipCursor(1) end)
+ vim.keymap.set({"n", "v"}, "<A-x>", mc.deleteCursor)
+ vim.keymap.set({"n", "v"}, "<A-left>", mc.nextCursor)
+ vim.keymap.set({"n", "v"}, "<A-right>", mc.prevCursor)
+
+
+ vim.keymap.set("n", "<esc>", function()
+    if mc.hasCursors() then
+        mc.clearCursors()
+    else
+                -- Default <esc> handler.
+    end
+ end)
+
  -- Tab Commands
  vim.keymap.set({"n"}, "<C-+>", function() vim.cmd.tabnew(); vim.cmd.Ex() end)
  vim.keymap.set({"n"}, "<C-->", vim.cmd.tabnew)
@@ -213,13 +225,17 @@
  vim.api.nvim_command("autocmd TermOpen * setlocal norelativenumber")
  vim.api.nvim_command("autocmd TermEnter * setlocal signcolumn=no")
  
+ -- Telescope Commands
  local telescope = require('telescope.builtin')
  vim.keymap.set('n', '<C-f>', telescope.live_grep)
  vim.keymap.set('n', '<C-e>', telescope.find_files)
  vim.keymap.set('n', '<A-f>', telescope.treesitter)
  vim.keymap.set('n', '<A-e>', telescope.lsp_references)
  vim.keymap.set('n', '<A-d>', telescope.diagnostics)
- 
+
+ -- Commenting Commands
+ vim.keymap.set('n', '<C-//>', 'gcc')
+ vim.keymap.set('i', '<C-//>', '<c-o>gcc')
  
  
  vim.api.nvim_create_autocmd('LspAttach', {
@@ -244,5 +260,5 @@
  
 lsp_setup("rust_analyzer") 
 lsp_setup("clangd")
-lsp_setup("typst_lsp")
 lsp_setup("pylsp")
+lsp_setup("tinymist")
