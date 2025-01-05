@@ -73,7 +73,6 @@ require("lazy").setup({
                 vim.cmd.colorscheme "catppuccin"
             end
         },
-        {"airblade/vim-gitgutter"},
         {
             'goolord/alpha-nvim',
             config = function ()
@@ -86,6 +85,9 @@ require("lazy").setup({
             config = function()
                 require('lualine').setup()
             end
+        },
+        {
+            'lewis6991/gitsigns.nvim'
         },
         {'neovim/nvim-lspconfig'},
         {'hrsh7th/nvim-cmp'},
@@ -101,6 +103,8 @@ require("lazy").setup({
     },
     checker = { enabled = true },
 })
+
+require("gitsigns").setup()
 
 require('telescope').setup {
     extensions = {
