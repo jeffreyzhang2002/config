@@ -90,23 +90,37 @@ require("lazy").setup({
             'lewis6991/gitsigns.nvim'
         },
         {'neovim/nvim-lspconfig'},
-        {'hrsh7th/nvim-cmp'},
-        {'hrsh7th/cmp-cmdline'},
-        {'hrsh7th/cmp-nvim-lsp'},
-        {"hrsh7th/cmp-nvim-lsp-document-symbol"},
-        {"hrsh7th/cmp-nvim-lsp-signature-help"},
-        {"hrsh7th/cmp-path"},
+        {
+            'saghen/blink.cmp',
+            version = '*',
+            opts = {
+                keymap = { preset = 'enter' },
+                sources = {
+                    default = {'lsp', 'path', 'snippets', 'buffer'},
+                },
+                completion = {
+                    list = { selection = "auto_insert" },
+                }
+            }
+        },
         {'nvim-telescope/telescope.nvim', tag = '0.1.8', dependencies = {'nvim-lua/plenary.nvim'}},
         {"nvim-treesitter/nvim-treesitter"},
         {'nvim-telescope/telescope-fzf-native.nvim', build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release'},
-        {'windwp/nvim-autopairs', event = "InsertEnter", config = true},
     },
     checker = { enabled = true },
 })
 
-require("gitsigns").setup()
+local telescope_actions = require("telescope.actions")
 
+require("gitsigns").setup()
 require('telescope').setup {
+    defaults = {
+        mappings = {
+            i = {
+                ["<esc>"] = telescope_actions.close
+            }
+        }
+    },
     extensions = {
         fzf = {
             fuzzy = true,
@@ -118,66 +132,9 @@ require('telescope').setup {
 }
 
 -- Enable Lsp for some language
-local lsp_setup = function(server, advanced)
-    if (advanced) then
-        require('lspconfig')[server].setup({
-            capabilities =  require('cmp_nvim_lsp').default_capabilities()
-        })
-    else
-        require('lspconfig')[server].setup({})
-    end
+local lsp_setup = function(server, capabilities)
+    require('lspconfig')[server].setup({capabilities = capabilities})
 end
-
-local cmp = require('cmp')
-local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-
-cmp.setup({
-    sources = {
-        {name = 'nvim_lsp'},
-        {name = 'nvim_lsp_signature_help'},
-        {name = 'path'}
-    },
-    mapping = cmp.mapping.preset.insert({
-        -- Enter key confirms completion item
-        ['<CR>'] = cmp.mapping.confirm({select = false}),
-
-        -- Ctrl + space triggers completion menu
-        ['<C-Space>'] = cmp.mapping.complete(),
-    }),
-})
-
-local define_arrow_keys = function(action)
-    return function(fallback)
-        if cmp.visible() then
-            action()
-        else
-            fallback()
-        end
-    end
-end
-
-cmp.setup.cmdline({"/","?"}, {
-    mapping = cmp.mapping.preset.cmdline({
-        ["<Down>"] = cmp.mapping(define_arrow_keys(cmp.select_next_item), {'c'}),
-        ["<Up>"] = cmp.mapping(define_arrow_keys(cmp.select_prev_item), {'c'}),
-    }),
-    sources = {
-        {name = "nvim_lsp_document_symbol"}
-    }
-})
-
-cmp.setup.cmdline(":", {
-    mapping = cmp.mapping.preset.cmdline({
-        ["<Down>"] = cmp.mapping(define_arrow_keys(cmp.select_next_item), {'c'}),
-        ["<Up>"] = cmp.mapping(define_arrow_keys(cmp.select_prev_item), {'c'}),
-    }),
-    sources = {
-        {name = "path"},
-        {name = "cmdline"}
-    }
-})
-
-cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
 
 -- Open file explorer
 vim.keymap.set({"n"}, "<leader>/", vim.cmd.Ex)
@@ -238,11 +195,11 @@ vim.api.nvim_command("autocmd TermEnter * setlocal signcolumn=no")
 
 -- Telescope Commands
 local telescope = require('telescope.builtin')
-vim.keymap.set('n', '<C-f>', telescope.live_grep)
-vim.keymap.set('n', '<C-e>', telescope.find_files)
-vim.keymap.set('n', '<A-f>', telescope.treesitter)
-vim.keymap.set('n', '<A-e>', telescope.lsp_references)
-vim.keymap.set('n', '<A-d>', telescope.diagnostics)
+vim.keymap.set({'n', 'i'}, '<C-f>', telescope.live_grep)
+vim.keymap.set({'n', 'i'}, '<C-e>', telescope.find_files)
+vim.keymap.set({'n', 'i'}, '<A-f>', telescope.treesitter)
+vim.keymap.set({'n', 'i'}, '<A-e>', telescope.lsp_references)
+vim.keymap.set({'n', 'i'}, '<A-d>', telescope.diagnostics)
 
 -- Commenting Commands
 vim.keymap.set('n', '<C-//>', 'gcc')
@@ -269,7 +226,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 -- File type specific information
 
-lsp_setup("rust_analyzer") 
-lsp_setup("clangd")
-lsp_setup("pylsp")
-lsp_setup("tinymist")
+local capabilities = require('blink.cmp').get_lsp_capabilities()
+
+lsp_setup("rust_analyzer", capabilities) 
+lsp_setup("clangd", capabilities)
+lsp_setup("pylsp",  capabilities)
+lsp_setup("tinymist",  capabilities)
