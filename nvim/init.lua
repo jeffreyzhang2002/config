@@ -99,9 +99,13 @@ require("lazy").setup({
                     default = {'lsp', 'path', 'snippets', 'buffer'},
                 },
                 completion = {
-                    list = { selection = "auto_insert" },
-                }
-            }
+                    list = { selection = {
+                        preselect = false,
+                        auto_insert = true
+                    }},
+                },
+            },
+            signature = { enabled = true }
         },
         {'nvim-telescope/telescope.nvim', tag = '0.1.8', dependencies = {'nvim-lua/plenary.nvim'}},
         {"nvim-treesitter/nvim-treesitter"},

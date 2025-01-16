@@ -2,7 +2,7 @@
     "Shebang": {
         "prefix": "shebang",
         "body": [
-            "#!/use/bin/env bash"
+            "#!/usr/bin/env bash"
         ],
         "description": "Generate bash shebang"
 
