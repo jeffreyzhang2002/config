@@ -66,6 +66,10 @@ vim.inccommand="nosplit"
 require("lazy").setup({
     spec = {
         {
+            "nvim-treesitter/nvim-treesitter",
+            build = ":TSUpdate"
+        },
+        {
             "catppuccin/nvim",
             name = "catppuccin",
             priority = 1000,
@@ -100,9 +104,11 @@ require("lazy").setup({
                         -- patterns to match Git signs
                         patterns = { "GitSign", "MiniDiffSign" },
                     },
-                    refresh = 5000, -- refresh at most every 50ms
+                    refresh = 500, -- refresh at most every 50ms
                 },
                 words = { enabled = true },
+                image = { enabled = false},
+                lazygit = {enabled = false}
             },
             keys = {
                 -- Top Pickers & Explorer
@@ -233,7 +239,7 @@ end
 
 Snacks.toggle.option("spell", { name = "Spelling" }):map("<M-s>")
 Snacks.toggle.option("wrap", { name = "Wrap" }):map("<M-z>")
-Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<C-l>")
+Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<M-l>")
 Snacks.toggle.diagnostics():map("<leader>ud")
 Snacks.toggle.line_number():map("<C-L>")
 
@@ -261,10 +267,6 @@ vim.keymap.set({"n"}, "<A-7>", "7gt")
 vim.keymap.set({"n"}, "<A-8>", "8gt")
 vim.keymap.set({"n"}, "<A-9>", "9gt")
 vim.keymap.set({"n"}, "<A-0>", ":tablest<cr>")
-
--- Line Numbers and Wrapping
-vim.keymap.set("n", "<c-l>", ":set relativenumber!<cr>")
-vim.keymap.set("n", "<a-z>", ":set wrap!<cr>")
 
 -- Windowing Commands
 vim.keymap.set({"n"}, "<C-Space>-", "<c-w>s")
